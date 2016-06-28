@@ -1,8 +1,13 @@
-var app = require('express')();
+var express 		= require('express');
+
+var app 			= express();
+
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-app.get('/', function(req, res){
+app.use('/', express.static(__dirname + '/public/app'));
+
+app.get('/chat', function(req, res){
   res.sendfile('index.html');
 });
 
@@ -14,7 +19,7 @@ io.on('connection', function(socket){
 
   socket.on('chat message', function(msg){
     console.log('message: ' + msg);
-    io.emit('chat message', msg);
+    socket.broadcast.emit('chat message', {name: 'other', content: msg});
   });
 });
 
