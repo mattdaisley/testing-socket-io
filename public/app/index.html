@@ -28,15 +28,18 @@
       <md-button class="menu" hide-gt-sm ng-click="socket.toggleList()" aria-label="Show User List">
         <md-icon md-svg-icon="menu" ></md-icon>
       </md-button>
-      <span class="">Matt Daisley</span>
+      <md-input-container class="username">
+        <label>Your Name</label>
+        <input ng-model="socket.name">
+      </md-input-container>
     </md-toolbar>
 
     <div flex layout="row">
 
         <md-sidenav ng-click="socket.toggleList()" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="left" class="site-side-nav md-whiteframe-z2" >
           <md-list>
-            <md-list-item ng-repeat="data in socket.collection" ng-click="socket.scrollToMessage($index)" ng-class="{'selected' : it === ul.selected }">
-              {{data.name}}
+            <md-list-item ng-repeat="data in socket.rooms" ng-click="socket.switchRoom(data)">
+              {{data}}
             </md-list-item>
           </md-list>
         </md-sidenav>
@@ -45,8 +48,8 @@
 
           <div id="vertical-container" class="md-whiteframe-z2">
             <div class="page-content">
-                <md-card ng-repeat="data in socket.collection track by $index" class="repeated-item" md-theme="{{ data.name == 'self' ? 'dark-grey' : 'default' }}" ng-class="{'self': data.name == 'self'}" id="{{$index}}">
-                  <md-card-content>{{data.content}}</md-card-content>
+                <md-card ng-repeat="data in socket.collection track by $index" class="repeated-item" md-theme="{{ socket.isOwner(data.name) ? 'dark-grey' : 'default' }}" md-theme-watch ng-class="{'self': socket.isOwner(data.name)}" id="{{$index}}">
+                  <md-card-content>{{data.name}}: {{data.content}}</md-card-content>
                 </md-card>
             </div>
           </div>
