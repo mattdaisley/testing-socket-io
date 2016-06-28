@@ -23,9 +23,9 @@
 
   </head>
 
-  <body ng-app="starterApp" layout="column" ng-controller="UserController as ul" ng-cloak>
+  <body ng-app="starterApp" layout="column" ng-controller="SocketController as socket" ng-cloak>
     <md-toolbar layout="row" layout-align-gt-sm="center center" layout-align="start center">
-      <md-button class="menu" hide-gt-sm ng-click="ul.toggleList()" aria-label="Show User List">
+      <md-button class="menu" hide-gt-sm ng-click="socket.toggleList()" aria-label="Show User List">
         <md-icon md-svg-icon="menu" ></md-icon>
       </md-button>
       <span class="">Matt Daisley</span>
@@ -33,57 +33,34 @@
 
     <div flex layout="row">
 
-        <md-sidenav ng-click="ul.toggleList()" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="left" class="site-side-nav md-whiteframe-z2" >
+        <md-sidenav ng-click="socket.toggleList()" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="left" class="site-side-nav md-whiteframe-z2" >
           <md-list>
-            <md-list-item ng-repeat="it in ul.users" ng-click="ul.selectUser($index)" ng-class="{'selected' : it === ul.selected }">
-              <!-- <img alt="{{ it.name }}" ng-src="{{ it.img }}" class="md-avatar"> -->
-              {{it.name}}
+            <md-list-item ng-repeat="data in socket.collection" ng-click="socket.scrollToMessage($index)" ng-class="{'selected' : it === ul.selected }">
+              {{data.name}}
             </md-list-item>
           </md-list>
         </md-sidenav>
 
         <md-content flex>
 
-          <!-- <md-virtual-repeat-container id="vertical-container" md-top-index="ul.topIndex" class="md-whiteframe-z2">
-            <div class="page-content">
-                <md-card md-virtual-repeat="item in ul.users" class="repeated-item" md-theme="{{ item.name == 'Summary' ? 'dark-grey' : 'default' }}" ng-class="{'self': item.name == 'Summary'}">
-                  <md-card-content>{{item.content}}</md-card-content>
-                </md-card>
-            </div>
-          </md-virtual-repeat-container> -->
-
-          <!-- <md-virtual-repeat-container id="vertical-container" class="md-whiteframe-z2">
-            <div class="page-content">
-              <md-card md-virtual-repeat="item in ul.infiniteItems" md-on-demand class="repeated-item" md-theme="{{ item.name == 'Summary' ? 'dark-grey' : 'default' }}" ng-class="{'self': item.name == 'Summary'}">
-                <md-card-content>{{item}}</md-card-content>
-              </md-card>
-            </div>
-          </md-virtual-repeat-container> -->
-
           <div id="vertical-container" class="md-whiteframe-z2">
             <div class="page-content">
-                <md-card ng-repeat="item in ul.users" class="repeated-item" md-theme="{{ item.name == 'self' ? 'dark-grey' : 'default' }}" ng-class="{'self': item.name == 'self'}" id="{{$index}}">
-                  <md-card-content>{{item.content}}</md-card-content>
+                <md-card ng-repeat="data in socket.collection track by $index" class="repeated-item" md-theme="{{ data.name == 'self' ? 'dark-grey' : 'default' }}" ng-class="{'self': data.name == 'self'}" id="{{$index}}">
+                  <md-card-content>{{data.content}}</md-card-content>
                 </md-card>
             </div>
           </div>
 
           <div class="footer">
             <div class="page-content">
-              <!-- <md-card> -->
-                <!-- <md-card-title> -->
-                  <!-- <md-card-title-text> -->
-                    <form name="userForm">
-                      
-                      <md-input-container class="md-block">
-                        <label>Your Message</label>
-                        <input ng-model="ul.message" ng-enter="ul.sendMessage(ul.message)">
-                      </md-input-container>
-                      
-                    </form>
-                  <!-- </md-card-title-text> -->
-                <!-- </md-card-title> -->
-              <!-- </md-card> -->
+                <form name="userForm">
+                  
+                  <md-input-container class="md-block">
+                    <label>Your Message</label>
+                    <input ng-model="socket.message" ng-enter="socket.sendMessage(socket.message)">
+                  </md-input-container>
+                  
+                </form>
             </div>
           </div>
           
@@ -91,21 +68,22 @@
 
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
+
     <script src="./lib/angular/angular.js"></script>
     <script src="./lib/angular-animate/angular-animate.js"></script>
     <script src="./lib/angular-aria/angular-aria.js"></script>
     <script type="text/javascript" src="./lib/angular-material/angular-material.js"></script>
+    <script type="text/javascript" src="./lib/angular-socket-io/socket.min.js"></script>
 
-    <script src="./src/users/Users.js"></script>
-    <script src="./src/users/UserController.js"></script>
-    <script src="./src/users/UserService.js"></script>
-
-    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="./src/Socket/Socket.js"></script>
+    <script src="./src/Socket/SocketController.js"></script>
+    <script src="./src/Socket/SocketDataService.js"></script>
 
     <script type="text/javascript">
 
           angular
-              .module('starterApp', ['ngMaterial', 'users'])
+              .module('starterApp', ['ngMaterial', 'Socket'])
               .config(function($mdThemingProvider, $mdIconProvider){
 
                   $mdIconProvider
